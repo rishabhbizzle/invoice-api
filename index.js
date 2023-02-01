@@ -5,112 +5,11 @@ const niceInvoice = require("nice-invoice");
 const path = require("path");
 const fs = require("fs");
 const app = express();
-const PORT = process.env.PORT || 5000
-
+const PORT = process.env.PORT || 5000;
 var easyinvoice = require("easyinvoice");
-var data = {
-    "images": {
-    "logo": "https://cdn.shopify.com/s/files/1/0566/3182/0333/files/LOGO-color.png"
-    },
-    "sender": {
-    "company": "Sample Corp",
-    "address": "Sample Street 123",
-    "zip": "1234 AB",
-    "city": "Sampletown",
-    "country": "Samplecountry"
-    },
-    "client": {
-    "company": "Client Corp",
-    "address": "Clientstreet 456",
-    "zip": "4567 CD",
-    "city": "Clientcity",
-    "country": "Clientcountry"
-    },
-    "information": {
-    "number": "2022.0001",
-    "date": "1.1.2022",
-    "due-date": "15.1.2022"
-    },
-    "products": [
-    {
-    "quantity": "2",
-    "description": "Test1",
-    "hsin": "123456",
-    "tax-rate": 6,
-    "price": 33.87
-    },
-    {
-    "quantity": "4",
-    "description": "Test2",
-    "hsin": "123456",
-    "tax-rate": 21,
-    "price": 10.45
-    }
-    ],
-    "bottom-notice": "Kindly pay your invoice within 15 days.",
-    "settings": {
-    "currency": "USD",
-    "tax-notation": "vat",
-    "margin-top": 50,
-    "margin-right": 50,
-    "margin-left": 50,
-    "margin-bottom": 25
-    }
-    }
+var cors = require("cors");
 
-// const { db } = require('./firebase.js')
-
-const invoiceDetail = {
-  shipping: {
-    name: "Micheal",
-    address: "1234 Main Street",
-    city: "Dubai",
-    state: "Dubai",
-    country: "UAE",
-    postal_code: 94111,
-  },
-  items: [
-    {
-      item: "Chair",
-      description: "Wooden chair",
-      quantity: 1,
-      price: 50.0,
-      tax: "10%",
-    },
-    {
-      item: "Watch",
-      description: "Wall watch for office",
-      quantity: 2,
-      price: 30.0,
-      tax: "10%",
-    },
-    {
-      item: "Water Glass Set",
-      description: "Water glass set for office",
-      quantity: 1,
-      price: 35.0,
-      tax: "",
-    },
-  ],
-  subtotal: 156,
-  total: 156,
-  order_number: 1234222,
-  header: {
-    company_name: "Nice Invoice",
-    company_logo: "logo.png",
-    company_address:
-      "Nice Invoice. 123 William Street 1th Floor New York, NY 123456",
-  },
-  footer: {
-    text: "This is footer - you can add any text here",
-  },
-  currency_symbol: "$",
-  date: {
-    billing_date: "08 August 2020",
-    due_date: "10 September 2020",
-  },
-};
-
+app.use(cors()); // Use this after the variable declaration
 const serviceAccount = require("./creds.json");
 const admin = require("firebase-admin");
 admin.initializeApp({
@@ -122,18 +21,70 @@ const db = admin.firestore();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+var data = {
+  images: {
+    logo: "https://cdn.shopify.com/s/files/1/0566/3182/0333/files/LOGO-color.png",
+  },
+  sender: {
+    company: "Sample Corp",
+    address: "Sample Street 123",
+    zip: "1234 AB",
+    city: "Sampletown",
+    country: "Samplecountry",
+  },
+  client: {
+    company: "Client Corp",
+    address: "Clientstreet 456",
+    zip: "4567 CD",
+    city: "Clientcity",
+    country: "Clientcountry",
+  },
+  information: {
+    number: "2022.0001",
+    date: "1.1.2022",
+    "due-date": "15.1.2022",
+  },
+  products: [
+    {
+      quantity: "2",
+      description: "Test1",
+      hsin: "123456",
+      "tax-rate": 6,
+      price: 33.87,
+    },
+    {
+      quantity: "4",
+      description: "Test2",
+      hsin: "123456",
+      "tax-rate": 21,
+      price: 10.45,
+    },
+  ],
+  "bottom-notice": "Kindly pay your invoice within 15 days.",
+  settings: {
+    currency: "USD",
+    "tax-notation": "vat",
+    "margin-top": 50,
+    "margin-right": 50,
+    "margin-left": 50,
+    "margin-bottom": 25,
+  },
+};
+
+// const { db } = require('./firebase.js')
+
 app.post("/generateInvoice", async (req, res) => {
   const { orderList } = await req.body;
   try {
     console.log(orderList);
     easyinvoice.createInvoice(data, async function (result) {
       //The response will contain a base64 encoded PDF file
-    //   console.log(result.pdf);
+      //   console.log(result.pdf);
       res.setHeader("Content-Type", "application/pdf");
       // Set the content-disposition header so that the browser prompts the user to download the file
       res.setHeader("Content-Disposition", "attachment; filename=invoice.pdf");
       // Send the PDF as the response
-      await fs.writeFileSync("invoice.pdf", result.pdf, 'base64');
+      //   await fs.writeFileSync("invoice.pdf", result.pdf, 'base64');
       res.send(result.pdf);
     });
 

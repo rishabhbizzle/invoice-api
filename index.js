@@ -26,18 +26,18 @@ var data = {
     logo: "https://cdn.shopify.com/s/files/1/0566/3182/0333/files/LOGO-color.png",
   },
   sender: {
-    company: "Sample Corp",
-    address: "Sample Street 123",
-    zip: "1234 AB",
-    city: "Sampletown",
-    country: "Samplecountry",
+    company: "DEPO SOLUTIONS PRIVATE LIMITED",
+    address: "77/1/A, Christ College Road, Topsia",
+    zip: "700046",
+    city: "Kolkata",
+    country: "India",
   },
   client: {
-    company: "Client Corp",
-    address: "Clientstreet 456",
-    zip: "4567 CD",
-    city: "Clientcity",
-    country: "Clientcountry",
+    company: "DEPO SOLUTIONS PRIVATE LIMITED",
+    address: "77/1/A, Christ College Road, Topsia",
+    zip: "700046",
+    city: "Kolkata",
+    country: "India",
   },
   information: {
     number: "2022.0001",
@@ -62,8 +62,8 @@ var data = {
   ],
   "bottom-notice": "Kindly pay your invoice within 15 days.",
   settings: {
-    currency: "USD",
-    "tax-notation": "vat",
+    currency: "INR",
+    "tax-notation": "GST",
     "margin-top": 50,
     "margin-right": 50,
     "margin-left": 50,
@@ -75,8 +75,10 @@ var data = {
 
 app.post("/generateInvoice", async (req, res) => {
   const { orderList } = await req.body;
+  console.log(orderList);
+  data.products = orderList;
+
   try {
-    console.log(orderList);
     easyinvoice.createInvoice(data, async function (result) {
       //The response will contain a base64 encoded PDF file
       //   console.log(result.pdf);

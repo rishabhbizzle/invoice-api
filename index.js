@@ -41,8 +41,8 @@ var data = {
   },
   information: {
     number: "2022.0001",
-    date: "1.1.2022",
-    "due-date": "15.1.2022",
+    date: "1.2.2023",
+    "due-date": "16.2.2023",
   },
   products: [
     {
